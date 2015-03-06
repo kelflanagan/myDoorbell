@@ -10,7 +10,7 @@ ruleset b502118x0 {
     logging on
     
     // functions available through API
-    provides myDoorbellRingtone myDoorbellRingtoneChunk, myDoorbellConfig
+    provides myDoorbellRingtoneChunk, myDoorbellConfig
 
     sharing on
 
@@ -190,32 +190,6 @@ ruleset b502118x0 {
     //
     myDoorbellConfig = function() {
       ent:myDoorbellState;
-    }
-
-    // myDoorbellRingtone()
-    // Input: parameter indicating "front" or "rear" door
-    //        parameters indicating start and end bytes
-    // Returns: JSON containing ringtone chunk
-    // Example Return: {"ringtone_chunk":"utf-8 encoded chunk"}
-    //
-    // Example curl: curl http://cs.kobj.net/sky/cloud/a301x7/myDoorbellRingtone?door=front&
-    //							_eci=C695CE4E-0B91-11E3-9DB3-90EBE71C24E1&
-    //                                                  start=#&end=#
-    //
-
-    myDoorbellRingtone = function(door) {
-      currentState = ent:myDoorbellState;
-
-      ringtone = (door eq "front") => currentState.pick("$.ringtone_name_front") |
-      	         (door eq "rear") => currentState.pick("$.ringtone_name_rear") |
-		 "error";
-		 
-      str = (ringtone neq "error") => dropbox_get_file(ringtone).pick("$.content") |
-            "error";
-
-      h = {};
-      (str neq "error") =>  h.put(["ringtone_file"], str) |
-      	       		    h.put(["ringtone_error"], "error");
     }
 
     // myDoorbellRingtoneChunk()
@@ -705,23 +679,14 @@ ruleset b502118x0 {
 
       webhookResourceRear = '/sky/event/' + meta:eci();
 
-//      ringtoneResourceFront = '/sky/cloud/' + 
-//      			       meta:rid() + 
-//			       '/myDoorbellRingtoneChunk?door=front&_eci=' +
-//			       meta:eci();
-//
-//      ringtoneResourceRear = '/sky/cloud/' + 
-//      			       meta:rid() + 
-//			       '/myDoorbellRingtoneChunk?door=rear&_eci=' +
-//			       meta:eci();
       ringtoneResourceFront = '/sky/cloud/' + 
       			       meta:rid() + 
-			       '/myDoorbellRingtone?door=front&_eci=' +
+			       '/myDoorbellRingtoneChunk?door=front&_eci=' +
 			       meta:eci();
 
       ringtoneResourceRear = '/sky/cloud/' + 
       			       meta:rid() + 
-			       '/myDoorbellRingtone?door=rear&_eci=' +
+			       '/myDoorbellRingtoneChunk?door=rear&_eci=' +
 			       meta:eci();
 
       ringtoneAckResourceFront = '/sky/event/' + meta:eci() + '/12345';
