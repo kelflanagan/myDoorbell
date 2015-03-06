@@ -7,7 +7,7 @@ ruleset b502118x0 {
     author "Kelly Flanagan"
     // Uncomment this line to require Marketplace purchase to use this app.
     // authz require user
-    logging off
+    logging on
     
     // functions available through API
     provides myDoorbellRingtoneChunk, myDoorbellConfig
