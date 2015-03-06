@@ -1,4 +1,4 @@
-ruleset b502118x0.prod {
+ruleset b502118x0 {
   meta {
     name "myDoorbell Dashboard"
     description <<
@@ -12,7 +12,6 @@ ruleset b502118x0.prod {
     
     // functions available through API
     provides myDoorbellRingtone myDoorbellRingtoneChunk, myDoorbellConfig
-
 
     key dropbox {
       "app_key" : "nml34ywdqiosl0q",
