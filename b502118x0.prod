@@ -1417,7 +1417,8 @@ ruleset b502118x0 {
 		    <p class="label">Choose Front Ringtone</p>
 		    <form id="myDoorbellFrontRingtone">
 		      <select class="myRingtones" size="4" name="frontRingtone">
-  			#{file_list2html(list)}
+//  			#{file_list2html(list)}
+			"hello"
 		      </select>
 		      <div> 
 		        <button class="btn-medium btn-green" name="frontRingtone" 
