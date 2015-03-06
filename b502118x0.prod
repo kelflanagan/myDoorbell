@@ -211,7 +211,7 @@ ruleset b502118x0 {
             "error";
 
       h = {};
-      (str neq "error") =>  h.put(["ringtone_whole"], str) |
+      (str neq "error") =>  h.put(["ringtone_file"], str) |
       	       		    h.put(["ringtone_error"], "error");
     }
 
