@@ -702,14 +702,23 @@ ruleset b502118x0 {
 
       webhookResourceRear = '/sky/event/' + meta:eci();
 
+//      ringtoneResourceFront = '/sky/cloud/' + 
+//      			       meta:rid() + 
+//			       '/myDoorbellRingtoneChunk?door=front&_eci=' +
+//			       meta:eci();
+//
+//      ringtoneResourceRear = '/sky/cloud/' + 
+//      			       meta:rid() + 
+//			       '/myDoorbellRingtoneChunk?door=rear&_eci=' +
+//			       meta:eci();
       ringtoneResourceFront = '/sky/cloud/' + 
       			       meta:rid() + 
-			       '/myDoorbellRingtoneChunk?door=front&_eci=' +
+			       '/myDoorbellRingtone?door=front&_eci=' +
 			       meta:eci();
 
       ringtoneResourceRear = '/sky/cloud/' + 
       			       meta:rid() + 
-			       '/myDoorbellRingtoneChunk?door=rear&_eci=' +
+			       '/myDoorbellRingtone?door=rear&_eci=' +
 			       meta:eci();
 
       ringtoneAckResourceFront = '/sky/event/' + meta:eci() + '/12345';
