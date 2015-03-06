@@ -31,8 +31,8 @@ else:
 
 # get the configuration from the config server
 try:
-p    response = make_https_request("cs.kobj.net",
-                                  "/sky/cloud/b502118x0.dev/myDoorbellConfig",
+    response = make_https_request("cs.kobj.net",
+                                  "/sky/cloud/a301x7/myDoorbellConfig",
                                   "_eci=C695CE4E-0B91-11E3-9DB3-90EBE71C24E1")
 except requests.ConnectionError:
     print "Connection error -", (time.strftime("%H:%M:%S"))
