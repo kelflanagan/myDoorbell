@@ -11,7 +11,7 @@ ruleset b502118x0 {
     sharing on
 
     // functions available through API
-    provides myDoorbellRingtoneChunk, myDoorbellConfig
+    provides myDoorbellRingtone, myDoorbellRingtoneChunk, myDoorbellConfig
 
     key dropbox {
       "app_key" : "nml34ywdqiosl0q",
@@ -189,6 +189,30 @@ ruleset b502118x0 {
     //
     myDoorbellConfig = function() {
       ent:myDoorbellState;
+    }
+
+    // myDoorbellRingtone()
+    // Input: parameter indicating "front" or "rear" door
+     // Returns: JSON containing ringtone
+    // Example Return: {"ringtone":"utf-8 encoded ringtone"}
+    //
+    // Example curl: curl http://cs.kobj.net/sky/cloud/b502118x0/
+    //                         myDoorbellRingtone?door=front&
+    //                         _eci=C695CE4E-0B91-11E3-9DB3-90EBE71C24E1
+    //
+    myDoorbellRingtone = function(door) {
+      currentState = ent:myDoorbellState;
+
+      ringtone = (door eq "front") => currentState.pick("$.ringtone_name_front") |
+      	         (door eq "rear") => currentState.pick("$.ringtone_name_rear") |
+		 "error";
+		 
+      str = (ringtone neq "error") => dropbox_get_file(ringtone).pick("$.content") |
+            "error";
+
+      h = {};
+      (str neq "error") =>  h.put(["ringtone_file"], str) |
+      	       		    h.put(["ringtone_error"], "error");
     }
 
     // myDoorbellRingtoneChunk()
