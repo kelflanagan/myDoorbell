@@ -1,4 +1,4 @@
-ruleset b501118x0 {
+ruleset b501118x0.prod {
   meta {
     name "myDoorbell Dashboard"
     description <<
