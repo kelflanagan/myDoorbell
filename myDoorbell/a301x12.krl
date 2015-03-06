@@ -1,4 +1,4 @@
-ruleset b502118x0 {
+ruleset a301x12 {
   meta {
     name "myDoorbell"
     description <<
@@ -8,10 +8,11 @@ ruleset b502118x0 {
     // Uncomment this line to require Marketplace purchase to use this app.
     // authz require user
     logging on
-    sharing on
-
+    
     // functions available through API
     provides myDoorbellRingtoneChunk, myDoorbellConfig
+
+    sharing on
 
     key dropbox {
       "app_key" : "nml34ywdqiosl0q",
@@ -169,7 +170,7 @@ ruleset b502118x0 {
     }
 
     // API functions available at 
-// https://cs.kobj.net/sky/cloud/b502118x0/fn?_eci=C695CE4E-0B91-11E3-9DB3-90EBE71C24E1
+// https://cs.kobj.net/sky/cloud/a301x7/fn?_eci=C695CE4E-0B91-11E3-9DB3-90EBE71C24E1
 
     // myDoorbellConfig()
     // Input: no parameters
@@ -197,7 +198,7 @@ ruleset b502118x0 {
     // Returns: JSON containing ringtone chunk
     // Example Return: {"ringtone_chunk":"utf-8 encoded chunk"}
     //
-    // Example curl: curl http://cs.kobj.net/sky/cloud/b502118x0/myDoorbellRingtoneChunk?door=front&
+    // Example curl: curl http://cs.kobj.net/sky/cloud/a301x7/myDoorbellRingtoneChunk?door=front&
     //							_eci=C695CE4E-0B91-11E3-9DB3-90EBE71C24E1&
     //                                                  start=#&end=#
     //
