@@ -11,7 +11,7 @@ ruleset b502118x0 {
     sharing on
     
     // functions available through API
-    provides myDoorbellRingtone myDoorbellRingtoneChunk, myDoorbellConfig
+    provides myDoorbellRingtone, myDoorbellRingtoneChunk, myDoorbellConfig
 
     key dropbox {
       "app_key" : "nml34ywdqiosl0q",
