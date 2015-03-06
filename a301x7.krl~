@@ -1,4 +1,4 @@
-ruleset b501118x0 {
+ruleset a301x7 {
   meta {
     name "myDoorbell Dashboard"
     description <<
@@ -170,7 +170,7 @@ ruleset b501118x0 {
     }
 
     // API functions available at 
-// https://cs.kobj.net/sky/cloud/b502118x0/fn?_eci=C695CE4E-0B91-11E3-9DB3-90EBE71C24E1
+// https://cs.kobj.net/sky/cloud/a301x7/fn?_eci=C695CE4E-0B91-11E3-9DB3-90EBE71C24E1
 
     // myDoorbellConfig()
     // Input: no parameters
@@ -185,7 +185,7 @@ ruleset b501118x0 {
     //                  etc...
     //                 }
     //
-    // Example curl: curl https://cs.kobj.net/sky/cloud/b502118x0/myDoorbellConfig?_eci=
+    // Example curl: curl https://cs.kobj.net/sky/cloud/a301x7/myDoorbellConfig?_eci=
     //							C695CE4E-0B91-11E3-9DB3-90EBE71C24E1
     //
     myDoorbellConfig = function() {
@@ -198,7 +198,7 @@ ruleset b501118x0 {
     // Returns: JSON containing ringtone chunk
     // Example Return: {"ringtone_chunk":"utf-8 encoded chunk"}
     //
-    // Example curl: curl http://cs.kobj.net/sky/cloud/b502118x0/myDoorbellRingtone?door=front&
+    // Example curl: curl http://cs.kobj.net/sky/cloud/a301x7/myDoorbellRingtone?door=front&
     //							_eci=C695CE4E-0B91-11E3-9DB3-90EBE71C24E1&
     //                                                  start=#&end=#
     //
@@ -224,7 +224,7 @@ ruleset b501118x0 {
     // Returns: JSON containing ringtone chunk
     // Example Return: {"ringtone_chunk":"utf-8 encoded chunk"}
     //
-    // Example curl: curl http://cs.kobj.net/sky/cloud/b502118x0/myDoorbellRingtoneChunk?door=front&
+    // Example curl: curl http://cs.kobj.net/sky/cloud/a301x7/myDoorbellRingtoneChunk?door=front&
     //							_eci=C695CE4E-0B91-11E3-9DB3-90EBE71C24E1&
     //                                                  start=#&end=#
     //
