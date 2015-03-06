@@ -8,11 +8,11 @@ ruleset b502118x0.prod {
     // Uncomment this line to require Marketplace purchase to use this app.
     // authz require user
     logging off
-    sharing on
     
     // functions available through API
     provides myDoorbellRingtone myDoorbellRingtoneChunk, myDoorbellConfig
 
+    sharing on
 
     key dropbox {
       "app_key" : "nml34ywdqiosl0q",
