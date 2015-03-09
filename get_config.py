@@ -2,7 +2,7 @@
 # Author: J. Kelly Flanagan
 # Copyright (c) 2015
 #
-# get_config.py connects to a configuration server and downloads the 
+# get_ringtone.py connects to a configuration server and downloads the 
 # device configuration data and store it to a file.
 ########################################################################
 
@@ -31,7 +31,7 @@ else:
 
 # get the configuration from the config server
 try:
-p    response = make_https_request("cs.kobj.net",
+    response = make_https_request("cs.kobj.net",
                                   "/sky/cloud/b502118x0.dev/myDoorbellConfig",
                                   "_eci=C695CE4E-0B91-11E3-9DB3-90EBE71C24E1")
 except requests.ConnectionError:
