@@ -11,7 +11,7 @@ ruleset b502118x0 {
     sharing on
 
     // functions available through API
-    provides myDoorbellRingtone, myDoorbellRingtoneChunk, myDoorbellConfig
+    provides myDoorbellRingtone, myDoorbellConfig
 
     key dropbox {
       "app_key" : "nml34ywdqiosl0q",
@@ -212,31 +212,6 @@ ruleset b502118x0 {
 
       h = {};
       (str neq "error") =>  h.put(["ringtone_file"], str) |
-      	       		    h.put(["ringtone_error"], "error");
-    }
-
-    // myDoorbellRingtoneChunk()
-    // Input: parameter indicating "front" or "rear" door
-    //        parameters indicating start and end bytes
-    // Returns: JSON containing ringtone chunk
-    // Example Return: {"ringtone_chunk":"utf-8 encoded chunk"}
-    //
-    // Example curl: curl http://cs.kobj.net/sky/cloud/b502118x0/myDoorbellRingtoneChunk?door=front&
-    //							_eci=C695CE4E-0B91-11E3-9DB3-90EBE71C24E1&
-    //                                                  start=#&end=#
-    //
-    myDoorbellRingtoneChunk = function(door, start, end) {
-      currentState = ent:myDoorbellState;
-
-      ringtone = (door eq "front") => currentState.pick("$.ringtone_name_front") |
-      	         (door eq "rear") => currentState.pick("$.ringtone_name_rear") |
-		 "error";
-		 
-      str = (ringtone neq "error") => dropbox_get_file_chunk(ringtone,start,end).pick("$.content") |
-            "error";
-
-      h = {};
-      (str neq "error") =>  h.put(["ringtone_chunk"], str) |
       	       		    h.put(["ringtone_error"], "error");
     }
 
@@ -702,15 +677,6 @@ ruleset b502118x0 {
 
       webhookResourceRear = '/sky/event/' + meta:eci();
 
-//      ringtoneResourceFront = '/sky/cloud/' + 
-//      			       meta:rid() + 
-//			       '/myDoorbellRingtoneChunk?door=front&_eci=' +
-//			       meta:eci();
-//
-//      ringtoneResourceRear = '/sky/cloud/' + 
-//      			       meta:rid() + 
-//			       '/myDoorbellRingtoneChunk?door=rear&_eci=' +
-//			       meta:eci();
       ringtoneResourceFront = '/sky/cloud/' + 
       			       meta:rid() + 
 			       '/myDoorbellRingtone?door=front&_eci=' +
