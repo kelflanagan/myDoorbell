@@ -32,9 +32,7 @@ def make_https_request(server, resource, parameters):
 # returns: response object as defined by requests
 def make_https_post(server, resource, parameters, payload):
     url = 'https://' + server + resource + parameters
-    print json.dumps(payload)
-    exit(0)
-    response = requests.post(url, data=json.dumps(payload))
+    response = requests.post(url, data=ast.literal_eval(payload))
     return response
 
 # let the ringtone server know that we acquired the ringtone so it
