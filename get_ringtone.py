@@ -12,57 +12,55 @@ import requests
 import os
 import ast
 import time
+import json
 
 # function make_https_request
 # parameters: server - fully qualified doamin name
 #             resource - url
-#             parameters - don't include the ?
+#             parameters - include the ?
 # returns: response object as defined by requests
 def make_https_request(server, resource, parameters):
-    url = "https://" + server + resource + "?" + parameters
+    url = "https://" + server + resource + parameters
     response = requests.get(url)
     return response
 
 # function make_https_post
 # parameters: server - fully qualified doamin name
 #             resource - url
-#             parameters - don't include the ?
+#             parameters - include the ?
 #             data - payload
 # returns: response object as defined by requests
 def make_https_post(server, resource, parameters, payload):
-    url = "https://" + server + resource + "?" + parameters
-    response = requests.post(url, data=payload)
+    url = 'https://' + server + resource + parameters
+    print json.dumps(payload)
+    exit(0)
+    response = requests.post(url, data=json.dumps(payload))
     return response
 
 # let the ringtone server know that we acquired the ringtone so it
 # can reset the flag
 def got_ringtone(bell):
-    # get config
-    try:
-        cf = open('/tmp/myDoorbellConfig', 'r')
-    except IOError:
-        return False
-    else:
-        config = ast.literal_eval(cf.read())
-        cf.close()
-        return config['ringtone_new_front'], config['ringtone_new_rear']
-    if bell == 'front':
-        payload = config['ringtone_ack_payload_front']
-    make_https_post('cs.kobj.net',
-                    '/sky/event/C695CE4E-0B91-11E3-9DB3-90EBE71C24E1',
-                    '',
-                    payload):
+    # get ack method
+    method = myDBConfig['ringtone_ack_method']
+    # get ringtone_ack resource
+    resource = myDBConfig['ringtone_ack_resource_' + bell]
+    # form ack payload
+    payload = myDBConfig['ringtone_ack_payload_' + bell]
 
+    # only support POST currently
+    if method == 'POST':
+        make_https_post('cs.kobj.net', resource, '', payload)
+    else:
+        print 'Only POST supported'
 
 # Acquire requested ringtone, write it to a temporary file, and rename it
 # to make the transaction atomic
 def get_ringtone(bell):
-    # form parameters for https request
-    p = 'door=' + bell + '&_eci=C695CE4E-0B91-11E3-9DB3-90EBE71C24E1'
+    # acquire and form resource. This resource includes  parameters
+    resource = myDBConfig['ringtone_resource_' + bell]
     # make request
     try:
-        r = make_https_request("cs.kobj.net",
-                               "/sky/cloud/b502118x0.dev/myDoorbellRingtone", p)
+        r = make_https_request("cs.kobj.net", resource, '')
     except r.ConnectionError:
         print "Connection error -", (time.strftime("%H:%M:%S"))
         return False
