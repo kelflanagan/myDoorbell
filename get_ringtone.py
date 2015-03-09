@@ -34,11 +34,6 @@ def make_https_post(server, resource, parameters, payload):
     response = requests.post(url, data=payload)
     return response
 
-# read the myDoorbell configuration file and return true for each ringtone
-# needed and false for those that are not needed.
-def is_ringtone_needed():
-    return config['ringtone_new_front'], config['ringtone_new_rear']
-
 # let the ringtone server know that we acquired the ringtone so it
 # can reset the flag
 def got_ringtone(bell):
@@ -115,7 +110,6 @@ else:
 
 # Determine if a new ringtone is needed. if it is, get it.  Let the server
 # know we got it
-front, rear = is_ringtone_needed()
 if myDBConfig['ringtone_new_front'] == 'true':
     if get_ringtone('front'):
         got_ringtone('front')
