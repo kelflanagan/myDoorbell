@@ -665,9 +665,9 @@ ruleset b502118x0 {
       		      "_type":"rearRing",
 		      "_async":"true"};
 
-      ackpayloadFront = '{"_domain":"myDoorbell",
+      ackpayloadFront = {"_domain":"myDoorbell",
       		      "_type":"gotFrontRingtone",
-		      "_async":"true"}';
+		      "_async":"true"};
 
       ackpayloadRear  = {"_domain":"myDoorbell",
       		      "_type":"gotRearRingtone",
