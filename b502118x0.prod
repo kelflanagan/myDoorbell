@@ -218,34 +218,17 @@ ruleset b502118x0 {
     // function newRingtone
     //
     // parameters: filename of new ringtone to be found at dropbox
-    // 		   oldSize is the size of the previous ringtone
     //		   door is either front ot rear
     // return:     A map such a	{"ringtone_new_front":"true",
-    //			         "ringtone_size_front":112,
     //			 	 "ringtone_name_front":"my_ringtone"}
     // errors:     If the filename doesn't exist the ringtone file is
-    // 		   set to the new filename, the size is set to 0 and the
-    //		   need for a new ringtone is set to false.
-    newRingtone = function(filename, oldSize, door) {
-      newSize = dropbox_get_file_size(filename);
-      // if newSize == zero then the file didnt exist
-      validSize = ((newSize > 0) && (newSize < 4194304)) => "true" | "false";
-      size = (validSize eq "true") => newSize | oldSize;
-      returnMap = ((validSize eq "true") && (door eq "front")) =>
+    // 		   set to the new filename
+    newRingtone = function(filename, door) {
+      returnMap = (door eq "front") =>
       		  	{"ringtone_new_front":"true",
-			 "ringtone_size_front":size.as("num"),
 			 "ringtone_name_front":"#{filename}"} |
-		  ((validSize eq "true") && (door eq "rear")) =>			 
+		  (door eq "rear") =>			 
       		  	{"ringtone_new_rear":"true",
-			 "ringtone_size_rear":size.as("num"),
-			 "ringtone_name_rear":"#{filename}"} |
-      		  ((validSize eq "false") && (door eq "front")) =>
-      		  	{"ringtone_new_front":"false",
-			 "ringtone_size_front":0,
-			 "ringtone_name_front":"#{filename}"} |
-		  ((validSize eq "false") && (door eq "rear")) =>			 
-      		  	{"ringtone_new_rear":"false",
-			 "ringtone_size_rear":0,
 			 "ringtone_name_rear":"#{filename}"} |
 			 "";
       returnMap;
@@ -292,15 +275,11 @@ ruleset b502118x0 {
 						   (k eq "poll_time") ||
 						   (k eq "ringtone_name_front") ||
 						   (k eq "ringtone_name_rear") ||
-						   (k eq "ringtone_resource_front") ||
-						   (k eq "ringtone_resource_rear") ||
-						   (k eq "ringtone_size_front") ||
 						   (k eq "ringtone_ack_resource_front") ||
 						   (k eq "ringtone_ack_resource_rear") ||
 						   (k eq "ringtone_ack_method") ||
 						   (k eq "ringtone_ack_payload_rear") ||
 						   (k eq "ringtone_ack_payload_front") ||
-						   (k eq "ringtone_size_rear") ||
 						   (k eq "sms_email_message")
 						   });
 
@@ -312,26 +291,6 @@ ruleset b502118x0 {
       changes = ((newHeaders.length() >= 0) && (newHeaders.length() < 101)) => 
   	            changes.put(["webhook_http_headers"], newHeaders) |
       	      	    changes.put(["webhook_http_headers"], config.pick("$.webhook_http_headers"));
-      
-      // ringtone resource front, check length and replace if appropriate
-      newRingtoneResource = (changes.keys().any(function(x){x eq "ringtone_resource_front"})) =>
-		              changes.pick("$.ringtone_resource_front")
-		            | config.pick("$.ringtone_resource_front");
-      status = ((newRingtoneResource.length() > 0) && (newRingtoneResource.length() < 101)) => 
- 		   status | "Error: Ringtone Resource";
-      changes = ((newRingtoneResource.length() > 0) && (newRingtoneResource.length() < 101)) => 
-  	            changes.put(["ringtone_resource_front"], newRingtoneResource) |
-      	      	    changes.put(["ringtone_resource_front"], config.pick("$.ringtone_resource_front"));
-      
-      // ringtone resource rear, check length and replace if appropriate
-      newRingtoneResource = (changes.keys().any(function(x){x eq "ringtone_resource_rear"})) =>
-		     changes.pick("$.ringtone_resource_rear")
-		  |  config.pick("$.ringtone_resource_rear");
-      status = ((newRingtoneResource.length() > 0) && (newRingtoneResource.length() < 101)) => 
- 		   status | "Error: Ringtone Resource";
-      changes = ((newRingtoneResource.length() > 0) && (newRingtoneResource.length() < 101)) => 
-  	            changes.put(["ringtone_resource_rear"], newRingtoneResource) |
-      	      	    changes.put(["ringtone_resource_rear"], config.pick("$.ringtone_resource_rear"));
       
       // webhook method, check if PUT, POST, or GET and replace if appropriate
       newWebhookMethod = (changes.keys().any(function(x){x eq "webhook_method"})) =>
@@ -557,35 +516,13 @@ ruleset b502118x0 {
 		    changes.put(["volume_rear"], math:int(newVolume)) |
       		    changes.put(["volume_rear"], math:int(config.pick("$.volume_rear")));
 
-      // deal with ringtone size
-      // check for size greater than 0, but less than 4,194,304
-      newSize = (changes.keys().any(function(x){x eq "ringtone_size_front"})) =>
-	           changes.pick("$.ringtone_size_front")
-		|  config.pick("$.ringtone_size_front");
-      status = ((newSize >= 0) && (newSize < 4194304)) => status | "Error: Ringtone Size";
-      changes = ((newSize >= 0) && (newSize < 4194304 )) => 
-	    changes.put(["ringtone_size_front"], math:int(newSize)) |
-	    changes.put(["ringtone_size_front"], math:int(config.pick("$.ringtone_size_front")));
-
-      newSize = (changes.keys().any(function(x){x eq "ringtone_size_rear"})) =>
-	           changes.pick("$.ringtone_size_rear")
-		|  config.pick("$.ringtone_size_rear");
-      status = ((newSize >= 0) && (newSize < 4194304)) => status | "Error: Ringtone Size";
-      changes = ((newSize >= 0) && (newSize < 4194304 )) => 
-	    changes.put(["ringtone_size_rear"], math:int(newSize)) |
-	    changes.put(["ringtone_size_rear"], math:int(config.pick("$.ringtone_size_rear")));
-
       // if we changed a ringtone filename figure out what map entries need changing
       newRingtoneMap = (changes.keys().any(function(x){x eq "ringtone_name_front"})) =>
-      		          newRingtone(changes.pick("$.ringtone_name_front"),
-		    		      math:int(changes.pick("$.ringtone_size_front")),
-				      "front") | "";
+      		          newRingtone(changes.pick("$.ringtone_name_front"), "front") | "";
       changes = changes.put(newRingtoneMap);
 
       newRingtoneMap = (changes.keys().any(function(x){x eq "ringtone_name_rear"})) =>
-      		          newRingtone(changes.pick("$.ringtone_name_rear"), 
-		    		      math:int(changes.pick("$.ringtone_size_rear")),
-				      "rear") | "";
+      		          newRingtone(changes.pick("$.ringtone_name_rear"), "rear") | "";
       changes = changes.put(newRingtoneMap);
 
       // merge modifications with current state
@@ -711,15 +648,11 @@ ruleset b502118x0 {
 		   "ringtone_new_rear":"false",
 		   "ringtone_name_front":"",
 		   "ringtone_name_rear":"",
-		   "ringtone_resource_front":"#{ringtoneResourceFront}",
-		   "ringtone_resource_rear":"#{ringtoneResourceRear}",
-		   "ringtone_size_front":0,
-		   "ringtone_size_rear":0,
-		   "ringtone_ack_resource_front":"#{ringtoneAckResourceFront}",
-		   "ringtone_ack_resource_rear":"#{ringtoneAckResourceRear}",
-		   "ringtone_ack_method":"POST",
-		   "ringtone_ack_payload_rear":ackpayloadRear.encode(),
-		   "ringtone_ack_payload_front":ackpayloadFront.encode(),
+//		   "ringtone_ack_resource_front":"#{ringtoneAckResourceFront}",
+//		   "ringtone_ack_resource_rear":"#{ringtoneAckResourceRear}",
+//		   "ringtone_ack_method":"POST",
+//		   "ringtone_ack_payload_rear":ackpayloadRear.encode(),
+//		   "ringtone_ack_payload_front":ackpayloadFront.encode(),
 		   "sms_email_message":"#{message}"
 	          };
     }
@@ -908,8 +841,7 @@ ruleset b502118x0 {
 
       // gather potential changes as a map
       changes = {"ringtone_new_front":"true",
-		 "ringtone_name_front":frontRingtone,
-      		 "ringtone_size_front":frontRingtoneSize
+		 "ringtone_name_front":frontRingtone
 		};
 
       // merge modifications with current state
@@ -938,8 +870,7 @@ ruleset b502118x0 {
 
       // gather potential changes as a map
       changes = {"ringtone_new_rear":"true",
-		 "ringtone_name_rear":rearRingtone,
-      		 "ringtone_size_rear":rearRingtoneSize
+		 "ringtone_name_rear":rearRingtone
 		};
 
       // merge modifications with current state
