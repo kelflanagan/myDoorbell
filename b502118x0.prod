@@ -134,29 +134,29 @@ ruleset b502118x0 {
     //
     // log is an array that will be passed in
     // where each entry is a string containing the date and time.
-    log2html = function(log) {
-      item_map = log.head();
-      item_time = item_map{"time"};
-      this_date = date(item_time);
-      todays_date = date(time:now());
-      this_door = item_map{"door"};
+//    log2html = function(log) {
+//      item_map = log.head();
+//      item_time = item_map{"time"};
+//      this_date = date(item_time);
+//      todays_date = date(time:now());
+//      this_door = item_map{"door"};
 
-      (log.length() > 0) => 
-        (this_date eq todays_date) =>
-	  (this_door eq "front") =>
-	    "<font color=\"#00aa00\">" + "<b>" + time:strftime(item_time, "%c") + "</b>" + "<br>" +
-	    "</font>" + log2html(log.tail()) |
-	    "<font color=\"#0000aa\">" + "<b>" + time:strftime(item_time, "%c") + "</b>" + "<br>" + 
-	    "</font>" + log2html(log.tail())
-	  |
-	  (this_door eq "front") =>
-	    "<font color=\"#00aa00\">" + time:strftime(item_time, "%c") + "<br>" + "</font>" + 
-	    log2html(log.tail()) |
-	    "<font color=\"#0000aa\">" + time:strftime(item_time, "%c") + "<br>" + "</font>" + 
-	    log2html(log.tail())
-	|
-	"";
-    }
+//      (log.length() > 0) => 
+//        (this_date eq todays_date) =>
+//	  (this_door eq "front") =>
+//	    "<font color=\"#00aa00\">" + "<b>" + time:strftime(item_time, "%c") + "</b>" + "<br>" +
+//	    "</font>" + log2html(log.tail()) |
+//	    "<font color=\"#0000aa\">" + "<b>" + time:strftime(item_time, "%c") + "</b>" + "<br>" + 
+//	    "</font>" + log2html(log.tail())
+//	  |
+//	  (this_door eq "front") =>
+//	    "<font color=\"#00aa00\">" + time:strftime(item_time, "%c") + "<br>" + "</font>" + 
+//	    log2html(log.tail()) |
+//	    "<font color=\"#0000aa\">" + time:strftime(item_time, "%c") + "<br>" + "</font>" + 
+//	    log2html(log.tail())
+//	|
+//	"";
+//    }
 
     // date() returns the date from the passed in time
     date = function(time) {
