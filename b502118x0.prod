@@ -11,7 +11,7 @@ ruleset b502118x0 {
     sharing on
 
     // functions available through API
-    provides myDoorbellRingtone, myDoorbellConfig
+    provides myDoorbellRingtone, myDoorbellConfig, myDoorbellTest
 
     key dropbox {
       "app_key" : "nml34ywdqiosl0q",
@@ -135,7 +135,7 @@ ruleset b502118x0 {
     // log is an array that will be passed in
     // where each entry is a string containing the date and time.
     log2html = function(myDBlog) {
-      my_item_map = myDBlog.head().encode();
+      my_item_map = myDBlog.head();
       item_time = my_item_map{"time"};
       this_date = date(item_time);
       todays_date = date(time:now());
@@ -189,6 +189,10 @@ ruleset b502118x0 {
     //
     myDoorbellConfig = function() {
       ent:myDoorbellState;
+    }
+
+    myDoorbellTest = function() {
+      ent:myDoorbellRingLog;
     }
 
     // myDoorbellRingtone()
