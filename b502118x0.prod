@@ -135,11 +135,11 @@ ruleset b502118x0 {
     // log is an array that will be passed in
     // where each entry is a string containing the date and time.
     log2html = function(log) {
-      item_map = log.head();
-      item_time = item_map{"time"};
+      my_item_map = log.head();
+      item_time = my_item_map{"time"};
       this_date = date(item_time);
       todays_date = date(time:now());
-      this_door = item_map{"door"};
+      this_door = my_item_map{"door"};
 
       (log.length() > 0) => 
         (this_date eq todays_date) =>
