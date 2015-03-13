@@ -281,11 +281,6 @@ ruleset b502118x0 {
 						   (k eq "poll_time") ||
 						   (k eq "ringtone_name_front") ||
 						   (k eq "ringtone_name_rear") ||
-						   (k eq "ringtone_ack_resource_front") ||
-						   (k eq "ringtone_ack_resource_rear") ||
-						   (k eq "ringtone_ack_method") ||
-						   (k eq "ringtone_ack_payload_rear") ||
-						   (k eq "ringtone_ack_payload_front") ||
 						   (k eq "sms_email_message")
 						   });
 
@@ -310,22 +305,6 @@ ruleset b502118x0 {
       	        (newWebhookMethod eq "PUT") => changes.put(["webhook_method"], newWebhookMethod) |
       	        (newWebhookMethod eq "POST") => changes.put(["webhook_method"], newWebhookMethod) |
 	        changes.put(["webhook_method"], config.pick("$.webhook_method"));
-      
-      // webhook method, check if PUT, POST, or GET and replace if appropriate
-      newRingtoneAckMethod = (changes.keys().any(function(x){x eq "ringtone_ack_method"})) =>
-		     changes.pick("$.ringtone_ack_method")
-		  |  config.pick("$.ringtone_ack_method");
-      status = (newRingtoneAckMethod eq "GET") => status |
-      	       (newRingtoneAckMethod eq "PUT") => status |
-      	       (newRingtoneAckMethod eq "POST") => status |
-	       "Error: Ringtone Ack Method";
-      changes = (newRingtoneAckMethod eq "GET") => changes.put(["ringtone_ack_method"], 
-      	      			      	 	   		newRingtoneAckMethod) |
-      	        (newRingtoneAckMethod eq "PUT") => changes.put(["ringtone_ack_method"], 
-				      	 	   		newRingtoneAckMethod) |
-      	        (newRingtoneAckMethod eq "POST") => changes.put(["ringtone_ack_method"], 
-				      	 	                 newRingtoneAckMethod) |
-	        changes.put(["ringtone_ack_method"], config.pick("$.ringtone_ack_method"));
       
       // email / sms message, check length and replace if appropriate
       newMessage = (changes.keys().any(function(x){x eq "sms_email_message"})) =>
@@ -356,26 +335,6 @@ ruleset b502118x0 {
   	            changes.put(["webhook_payload_rear"], newWebhookPayload) |
       	      	    changes.put(["webhook_payload_rear"], config.pick("$.webhook_payload_rear"));
       
-      // webhook payload front, check length and replace if appropriate
-      newRingtoneAckPayload = (changes.keys().any(function(x){x eq "ringtone_ack_payload_front"})) =>
-		     changes.pick("$.ringtone_ack_payload_front")
-		  |  config.pick("$.ringtone_ack_payload_front");
-      status = ((newRingtoneAckPayload.length() > 0) && (newRingtoneAckPayload.length() < 101)) => 
- 		   status | "Error: Ringtone Ack Payload";
-      changes = ((newRingtoneAckPayload.length() > 0) && (newRingtoneAckPayload.length() < 101)) => 
-  	            changes.put(["ringtone_ack_payload_front"], newRingtoneAckPayload) |
-      	      	    changes.put(["ringtone_ack_payload_front"], config.pick("$.ringtone_ack_payload_front"));
-      
-      // webhook payload rear, check length and replace if appropriate
-      newRingtoneAckPayload = (changes.keys().any(function(x){x eq "ringtone_ack_payload_rear"})) =>
-		     changes.pick("$.ringtone_ack_payload_rear")
-		  |  config.pick("$.ringtone_ack_payload_rear");
-      status = ((newRingtoneAckPayload.length() > 0) && (newRingtoneAckPayload.length() < 101)) => 
- 		   status | "Error: Ringtone Ack Payload";
-      changes = ((newRingtoneAckPayload.length() > 0) && (newRingtoneAckPayload.length() < 101)) => 
-  	            changes.put(["ringtone_ack_payload_rear"], newRingtoneAckPayload) |
-      	      	    changes.put(["ringtone_ack_payload_rear"], config.pick("$.ringtone_ack_payload_rear"));
-      
       // webhook resource front, check length and replace if appropriate
       newWebhookResource = (changes.keys().any(function(x){x eq "webhook_resource_front"})) =>
 		     changes.pick("$.webhook_resource_front")
@@ -395,26 +354,6 @@ ruleset b502118x0 {
       changes = ((newWebhookResource.length() > 0) && (newWebhookResource.length() < 101)) => 
   	            changes.put(["webhook_resource_rear"], newWebhookResource) |
       	      	    changes.put(["webhook_resource_rear"], config.pick("$.webhook_resource_rear"));
-      
-      // ringtone ack resource front, check length and replace if appropriate
-      newRingtoneAckResource = (changes.keys().any(function(x){x eq "ringtone_ack_resource_front"})) =>
-		     changes.pick("$.ringtone_ack_resource_front")
-		  |  config.pick("$.ringtone_ack_resource_front");
-      status = ((newRingtoneAckResource.length() > 0) && (newRingtoneAckResource.length() < 101)) => 
- 		   status | "Error: Ringtone Ack Resource";
-      changes = ((newRingtoneAckResource.length() > 0) && (newRingtoneAckResource.length() < 101)) => 
-  	            changes.put(["ringtone_ack_resource_front"], newRingtoneAckResource) |
-      	      	    changes.put(["ringtone_ack_resource_front"], config.pick("$.ringtone_ack_resource_front"));
-      
-      // ringtone ack resource rear, check length and replace if appropriate
-      newRingtoneAckResource = (changes.keys().any(function(x){x eq "ringtone_ack_resource_rear"})) =>
-		     changes.pick("$.ringtone_ack_resource_rear")
-		  |  config.pick("$.ringtone_ack_resource_rear");
-      status = ((newRingtoneAckResource.length() > 0) && (newRingtoneAckResource.length() < 101)) => 
- 		   status | "Error: Ringtone Ack Resource";
-      changes = ((newRingtoneAckResource.length() > 0) && (newRingtoneAckResource.length() < 101)) => 
-  	            changes.put(["ringtone_ack_resource_rear"], newRingtoneAckResource) |
-      	      	    changes.put(["ringtone_ack_resource_rear"], config.pick("$.ringtoneAck_resource_rear"));
       
       // webhook server, check length and replace if appropriate
       newWebhookServer = (changes.keys().any(function(x){x eq "webhook_server"})) =>
@@ -654,11 +593,6 @@ ruleset b502118x0 {
 		   "ringtone_new_rear":"false",
 		   "ringtone_name_front":"",
 		   "ringtone_name_rear":"",
-		   "ringtone_ack_resource_front":"#{ringtoneAckResourceFront}",
-		   "ringtone_ack_resource_rear":"#{ringtoneAckResourceRear}",
-		   "ringtone_ack_method":"POST",
-		   "ringtone_ack_payload_rear":ackpayloadRear.encode(),
-		   "ringtone_ack_payload_front":ackpayloadFront.encode(),
 		   "sms_email_message":"#{message}"
 	          };
     }
