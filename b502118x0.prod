@@ -11,7 +11,7 @@ ruleset b502118x0 {
     sharing on
 
     // functions available through API
-    provides myDoorbellRingtone, myDoorbellConfig, myDoorbellTest
+    provides myDoorbellRingtone, myDoorbellConfig, myDoorbellRingtoneList
 
     key dropbox {
       "app_key" : "nml34ywdqiosl0q",
@@ -191,8 +191,8 @@ ruleset b502118x0 {
       ent:myDoorbellState;
     }
 
-    myDoorbellTest = function() {
-      ent:myDoorbellRingLog;
+    myDoorbellRingtoneList = function() {
+      dropbox_list_files();
     }
 
     // myDoorbellRingtone()
