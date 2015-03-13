@@ -275,8 +275,6 @@ ruleset b502118x0 {
 						   (k eq "poll_time") ||
 						   (k eq "ringtone_name_front") ||
 						   (k eq "ringtone_name_rear") ||
-						   (k eq "ringtone_ack_resource_front") ||
-						   (k eq "ringtone_ack_resource_rear") ||
 						   (k eq "ringtone_ack_method") ||
 						   (k eq "ringtone_ack_payload_rear") ||
 						   (k eq "ringtone_ack_payload_front") ||
@@ -389,26 +387,6 @@ ruleset b502118x0 {
       changes = ((newWebhookResource.length() > 0) && (newWebhookResource.length() < 101)) => 
   	            changes.put(["webhook_resource_rear"], newWebhookResource) |
       	      	    changes.put(["webhook_resource_rear"], config.pick("$.webhook_resource_rear"));
-      
-      // ringtone ack resource front, check length and replace if appropriate
-      newRingtoneAckResource = (changes.keys().any(function(x){x eq "ringtone_ack_resource_front"})) =>
-		     changes.pick("$.ringtone_ack_resource_front")
-		  |  config.pick("$.ringtone_ack_resource_front");
-      status = ((newRingtoneAckResource.length() > 0) && (newRingtoneAckResource.length() < 101)) => 
- 		   status | "Error: Ringtone Ack Resource";
-      changes = ((newRingtoneAckResource.length() > 0) && (newRingtoneAckResource.length() < 101)) => 
-  	            changes.put(["ringtone_ack_resource_front"], newRingtoneAckResource) |
-      	      	    changes.put(["ringtone_ack_resource_front"], config.pick("$.ringtone_ack_resource_front"));
-      
-      // ringtone ack resource rear, check length and replace if appropriate
-      newRingtoneAckResource = (changes.keys().any(function(x){x eq "ringtone_ack_resource_rear"})) =>
-		     changes.pick("$.ringtone_ack_resource_rear")
-		  |  config.pick("$.ringtone_ack_resource_rear");
-      status = ((newRingtoneAckResource.length() > 0) && (newRingtoneAckResource.length() < 101)) => 
- 		   status | "Error: Ringtone Ack Resource";
-      changes = ((newRingtoneAckResource.length() > 0) && (newRingtoneAckResource.length() < 101)) => 
-  	            changes.put(["ringtone_ack_resource_rear"], newRingtoneAckResource) |
-      	      	    changes.put(["ringtone_ack_resource_rear"], config.pick("$.ringtoneAck_resource_rear"));
       
       // webhook server, check length and replace if appropriate
       newWebhookServer = (changes.keys().any(function(x){x eq "webhook_server"})) =>
