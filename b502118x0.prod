@@ -89,28 +89,6 @@ ruleset b502118x0 {
       })
     }
 
-    // Dropbox API call
-    // this returns the size of the file pointed to by filename parameter
-    // if the file doesn't exist a size of zero is returned
-    dropbox_get_file_size = function(filename) {
-      status = http:get('https://api.dropbox.com/1/metadata/sandbox/' + filename,
-               {},
-               {"Authorization" : create_oauth_header_value(keys:dropbox('app_key'),
-						   keys:dropbox('app_secret'),
-                         			   ent:access_token,
-                         			   ent:access_token_secret)
-               }).pick("$.status_code");
-
-      (status eq 404) => 0 |
-               http:get('https://api.dropbox.com/1/metadata/sandbox/' + filename,
-               {},
-               {"Authorization" : create_oauth_header_value(keys:dropbox('app_key'),
-						   keys:dropbox('app_secret'),
-                         			   ent:access_token,
-                         			   ent:access_token_secret)
-               }).pick("$.content").decode().pick("$.bytes");
-    }
-
     // file_list2html() recursively traverses an array of list data and for
     // each entry in the array prepend and append the appropriate html to add the
     // file list data to the file area in the applicaiton.  This creates <option>
@@ -766,9 +744,8 @@ ruleset b502118x0 {
   rule myDoorbellFrontRingtone {
     select when web submit "#myDoorbellFrontRingtone"
     pre {
-      // get ringtone name and size
+      // get ringtone name
       frontRingtone = event:attr("frontRingtone");
-      frontRingtoneSize = dropbox_get_file_size(frontRingtone);
 
       // capture current doorbell state
       config = ent:myDoorbellState;
@@ -795,9 +772,8 @@ ruleset b502118x0 {
   rule myDoorbellRearRingtone {
     select when web submit "#myDoorbellRearRingtone"
     pre {
-      // get ringtone name and size
+      // get ringtone name
       rearRingtone = event:attr("rearRingtone");
-      rearRingtoneSize = dropbox_get_file_size(rearRingtone);
 
       // capture current doorbell state
       config = ent:myDoorbellState;
