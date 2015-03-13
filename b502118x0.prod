@@ -729,7 +729,7 @@ ruleset b502118x0 {
       config = ent:myDoorbellState;
 
       // print to log
-      log("config = " + config);
+      log <<Config: #{config}>>
 
       // gather potential changes as a map
       changes = {"ringtone_new_front":"true",
