@@ -1090,7 +1090,7 @@ ruleset b502118x0 {
 
       // calculate a few needful things
       totalRings = ent:myDoorbellFrontRingCount + ent:myDoorbellRearRingCount;
-JKF      log = ent:myDoorbellRingLog;
+      log = ent:myDoorbellRingLog;
       list = dropbox_list_files();
 
       // generate html to display
