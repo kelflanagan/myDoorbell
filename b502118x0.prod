@@ -77,18 +77,6 @@ ruleset b502118x0 {
       })
     }
 
-    // get a chunk of a file from dropbox
-    dropbox_get_file_chunk = function(filename, start, end) {
-      http:get('https://api-content.dropbox.com/1/files/sandbox/' + filename,
-      {},
-      {"Authorization" : create_oauth_header_value(keys:dropbox('app_key'),
-						   keys:dropbox('app_secret'),
-                         			   ent:access_token,
-                         			   ent:access_token_secret),
-       "Range" : 'bytes=' + start + '-' + end
-      })
-    }
-
     // Dropbox API call
     // this returns the size of the file pointed to by filename parameter
     // if the file doesn't exist a size of zero is returned
