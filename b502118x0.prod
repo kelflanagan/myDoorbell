@@ -729,6 +729,7 @@ ruleset b502118x0 {
       config = ent:myDoorbellState;
 
       // print to log
+      // added comment
       log <<Config: #{config}>>
 
       // gather potential changes as a map
