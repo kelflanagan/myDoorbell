@@ -1090,7 +1090,7 @@ ruleset b502118x0 {
 
       // calculate a few needful things
       totalRings = ent:myDoorbellFrontRingCount + ent:myDoorbellRearRingCount;
-      log = ent:myDoorbellRingLog;
+JKF      log = ent:myDoorbellRingLog;
       list = dropbox_list_files();
 
       // generate html to display
@@ -1299,7 +1299,7 @@ ruleset b502118x0 {
 		      <div class="key" id="rear">Rear</div>
 		    </div>
 		    <div class="log-box">
-		      #{log2html(log.reverse())}
+		      "" // #{log2html(log.reverse())}
       	            </div>
       		  </div>
       		  <div class="column-wrapper">
