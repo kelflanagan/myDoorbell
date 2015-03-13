@@ -77,75 +77,6 @@ ruleset b502118x0 {
       })
     }
 
-    // Dropbox API call
-    // this returns the size of the file pointed to by filename parameter
-    // if the file doesn't exist a size of zero is returned
-    dropbox_get_file_size = function(filename) {
-      status = http:get('https://api.dropbox.com/1/metadata/sandbox/' + filename,
-               {},
-               {"Authorization" : create_oauth_header_value(keys:dropbox('app_key'),
-						   keys:dropbox('app_secret'),
-                         			   ent:access_token,
-                         			   ent:access_token_secret)
-               }).pick("$.status_code");
-
-      (status eq 404) => 0 |
-               http:get('https://api.dropbox.com/1/metadata/sandbox/' + filename,
-               {},
-               {"Authorization" : create_oauth_header_value(keys:dropbox('app_key'),
-						   keys:dropbox('app_secret'),
-                         			   ent:access_token,
-                         			   ent:access_token_secret)
-               }).pick("$.content").decode().pick("$.bytes");
-    }
-
-    // file_list2html() recursively traverses an array of list data and for
-    // each entry in the array prepend and append the appropriate html to add the
-    // file list data to the file area in the applicaiton.  This creates <option>
-    // elements for each file for a "select" element in the html
-    //
-    // list is an array that will be passed in
-    // where each entry is a string containing the file in the format /file_name.extension
-    file_list2html = function(flist) {
-      // remove preceeding /
-      list_item = flist.head().replace(re/\//, "");
-
-      (flist.length() > 0) => 
-        '<option value="#{list_item}">#{list_item}</option>' + file_list2html(flist.tail())
-	|
-	"";
-    }
-
-    // log2html() recursively traverses an array of log data and for
-    // each entry in the array appends the appropriate html to add the
-    // log data to a textarea that will be rendered elsewhere.
-    //
-    // log is an array that will be passed in
-    // where each entry is a string containing the date and time.
-    log2html = function(myDBlog) {
-      my_item_map = myDBlog.head();
-      item_time = my_item_map{"time"};
-      this_date = date(item_time);
-      todays_date = date(time:now());
-      this_door = my_item_map{"door"};
-
-      (myDBlog.length() > 0) => 
-        (this_date eq todays_date) =>
-	  (this_door eq "front") =>
-	    "<font color=\"#00aa00\">" + "<b>" + time:strftime(item_time, "%c") + "</b>" + "<br>" +
-	    "</font>" + log2html(myDBlog.tail()) |
-	    "<font color=\"#0000aa\">" + "<b>" + time:strftime(item_time, "%c") + "</b>" + "<br>" + 
-	    "</font>" + log2html(myDBlog.tail())
-	  |
-	  (this_door eq "front") =>
-	    "<font color=\"#00aa00\">" + time:strftime(item_time, "%c") + "<br>" + "</font>" + 
-	    log2html(myDBlog.tail()) |
-	    "<font color=\"#0000aa\">" + time:strftime(item_time, "%c") + "<br>" + "</font>" + 
-	    log2html(myDBlog.tail())
-	|
-	"";
-    }
-
     // date() returns the date from the passed in time
     date = function(time) {
       time.split(re/T/).head();
@@ -210,27 +141,6 @@ ruleset b502118x0 {
       (str neq "error") =>  h.put(["ringtone_file"], str) |
       	       		    h.put(["ringtone_error"], "error");
     }
-
-    // function newRingtone
-    //
-    // parameters: filename of new ringtone to be found at dropbox
-    // 		   oldSize is the size of the previous ringtone
-    //		   door is either front ot rear
-    // return:     A map such a	{"ringtone_new_front":"true",
-    //			 	 "ringtone_name_front":"my_ringtone"}
-    // errors:     If the filename doesn't exist the ringtone file is
-    // 		   set to the new filename, the size is set to 0 and the
-    //		   need for a new ringtone is set to false.
-    newRingtone = function(filename, door) {
-      returnMap = (door eq "front") =>
-       		  	{"ringtone_new_front":"true",
-			 "ringtone_name_front":"#{filename}"} |
-		  (door eq "rear") =>			 
-      		  	{"ringtone_new_rear":"true",
-			 "ringtone_name_rear":"#{filename}"} |
-			 "";
-      returnMap;
-    } // end newRingtone
 
     // check to see if we are authorized on Dropbox
     account_info_result = dropbox_core_api_call('/account/info');
