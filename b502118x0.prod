@@ -833,7 +833,7 @@ ruleset b502118x0 {
     }
     {
       CloudRain:hideSpinner();
-//      CloudRain:createLoadPanel("myDoorbell Dashboard", {}, setup_html);
+      CloudRain:createLoadPanel("myDoorbell Dashboard", {}, setup_html);
     }
   }
 
