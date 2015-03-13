@@ -1299,7 +1299,7 @@ JKF      log = ent:myDoorbellRingLog;
 		      <div class="key" id="rear">Rear</div>
 		    </div>
 		    <div class="log-box">
-		      #{log2html(log.reverse())}
+//		      #{log2html(log.reverse())}
       	            </div>
       		  </div>
       		  <div class="column-wrapper">
