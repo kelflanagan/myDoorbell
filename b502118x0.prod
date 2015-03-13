@@ -730,7 +730,7 @@ ruleset b502118x0 {
 
       // print to log
       // added comment
-      log <<Config: #config>>
+      a = config.klog(">> Config: >> ");
 
       // gather potential changes as a map
       changes = {"ringtone_new_front":"true",
