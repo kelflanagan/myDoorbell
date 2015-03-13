@@ -99,53 +99,6 @@ ruleset b502118x0 {
                }).pick("$.content").decode().pick("$.bytes");
     }
 
-    // file_list2html() recursively traverses an array of list data and for
-    // each entry in the array prepend and append the appropriate html to add the
-    // file list data to the file area in the applicaiton.  This creates <option>
-    // elements for each file for a "select" element in the html
-    //
-    // list is an array that will be passed in
-    // where each entry is a string containing the file in the format /file_name.extension
-    file_list2html = function(flist) {
-      // remove preceeding /
-      list_item = flist.head().replace(re/\//, "");
-
-      (flist.length() > 0) => 
-        '<option value="#{list_item}">#{list_item}</option>' + file_list2html(flist.tail())
-	|
-	"";
-    }
-
-    // log2html() recursively traverses an array of log data and for
-    // each entry in the array appends the appropriate html to add the
-    // log data to a textarea that will be rendered elsewhere.
-    //
-    // log is an array that will be passed in
-    // where each entry is a string containing the date and time.
-    log2html = function(myDBlog) {
-      my_item_map = myDBlog.head();
-      item_time = my_item_map{"time"};
-      this_date = date(item_time);
-      todays_date = date(time:now());
-      this_door = my_item_map{"door"};
-
-      (myDBlog.length() > 0) => 
-        (this_date eq todays_date) =>
-	  (this_door eq "front") =>
-	    "<font color=\"#00aa00\">" + "<b>" + time:strftime(item_time, "%c") + "</b>" + "<br>" +
-	    "</font>" + log2html(myDBlog.tail()) |
-	    "<font color=\"#0000aa\">" + "<b>" + time:strftime(item_time, "%c") + "</b>" + "<br>" + 
-	    "</font>" + log2html(myDBlog.tail())
-	  |
-	  (this_door eq "front") =>
-	    "<font color=\"#00aa00\">" + time:strftime(item_time, "%c") + "<br>" + "</font>" + 
-	    log2html(myDBlog.tail()) |
-	    "<font color=\"#0000aa\">" + time:strftime(item_time, "%c") + "<br>" + "</font>" + 
-	    log2html(myDBlog.tail())
-	|
-	"";
-    }
-
     // date() returns the date from the passed in time
     date = function(time) {
       time.split(re/T/).head();
@@ -210,27 +163,6 @@ ruleset b502118x0 {
       (str neq "error") =>  h.put(["ringtone_file"], str) |
       	       		    h.put(["ringtone_error"], "error");
     }
-
-    // function newRingtone
-    //
-    // parameters: filename of new ringtone to be found at dropbox
-    // 		   oldSize is the size of the previous ringtone
-    //		   door is either front ot rear
-    // return:     A map such a	{"ringtone_new_front":"true",
-    //			 	 "ringtone_name_front":"my_ringtone"}
-    // errors:     If the filename doesn't exist the ringtone file is
-    // 		   set to the new filename, the size is set to 0 and the
-    //		   need for a new ringtone is set to false.
-    newRingtone = function(filename, door) {
-      returnMap = (door eq "front") =>
-       		  	{"ringtone_new_front":"true",
-			 "ringtone_name_front":"#{filename}"} |
-		  (door eq "rear") =>			 
-      		  	{"ringtone_new_rear":"true",
-			 "ringtone_name_rear":"#{filename}"} |
-			 "";
-      returnMap;
-    } // end newRingtone
 
     // check to see if we are authorized on Dropbox
     account_info_result = dropbox_core_api_call('/account/info');
@@ -678,124 +610,6 @@ ruleset b502118x0 {
     }
   }
 
-  // this event is raised once each day at midnight to
-  // clasify log data as not being on the current day
-  rule myDoorbellDay {
-    select when explicit myDoorbellNewDay
-    pre {
-    }
-    {
-      noop();
-    }
-    always {
-      clear ent:myDoorbellRingsToday;
-    }
-  }
-
-
-  // this event is raised by the action button on the web UI
-  // the attributes are the form entries, check boxes, etc.
-  rule myDoorbellActionRule {
-    select when web submit "#myDoorbellActions"
-    pre {
-      // when the save action web button is depressed this event is invoked
-      // the values on the web form are extraced
-      volFront = event:attr("volumeFront");
-      volRear = event:attr("volumeRear");
-      message = event:attr("myDoorbellMessage");
-
-      SMSFront = (event:attr("SMSFront") eq "SMS") => "true" | "false";
-      SMSRear = (event:attr("SMSRear") eq "SMS") => "true" | "false";
-      EmailFront = (event:attr("EmailFront") eq "Email") => "true" | "false";
-      EmailRear = (event:attr("EmailRear") eq "Email") => "true" | "false";
-      SilentFront = (event:attr("SilentFront") eq "Silent") => "true" | "false";
-      SilentRear = (event:attr("SilentRear") eq "Silent") => "true" | "false";
-
-      // capture current doorbell state
-      config = ent:myDoorbellState;
-
-      // gather potential changes as a map
-      changes = {"volume_front":math:int(volFront),
-      	         "volume_rear":math:int(volRear),
-		 "sms_email_message":message,
-		 "silent_front":"#{SilentFront}",
-		 "silent_rear":"#{SilentRear}",
-		 "email_front":"#{EmailFront}",
-		 "email_rear":"#{EmailRear}",
-		 "sms_front":"#{SMSFront}",
-		 "sms_rear":"#{SMSRear}"
-                };
-
-      // merge modifications with current state
-      config = config.put(changes);
-    }
-    {
-      CloudRain:hideSpinner();
-    }
-    fired {
-      // save current state as state
-      set ent:myDoorbellState config;
-    }
-  }
-
-  // this event is raised by the new ringtone seciton of the web UI
-  rule myDoorbellFrontRingtone {
-    select when web submit "#myDoorbellFrontRingtone"
-    pre {
-      // get ringtone name and size
-      frontRingtone = event:attr("frontRingtone");
-      frontRingtoneSize = dropbox_get_file_size(frontRingtone);
-
-      // capture current doorbell state
-      config = ent:myDoorbellState;
-
-      // gather potential changes as a map
-      changes = {"ringtone_new_front":"true",
-		 "ringtone_name_front":frontRingtone
-		};
-
-      // merge modifications with current state
-      config = config.put(changes);
-    }
-    {
-      CloudRain:hideSpinner();
-    }
-    fired {
-      // save current state as state
-      set ent:myDoorbellState config;
-      raise explicit event myDoorbellHome;
-    }
-  }
-
-  // this event is raised in response to the rear ringtone button on the web UI
-  rule myDoorbellRearRingtone {
-    select when web submit "#myDoorbellRearRingtone"
-    pre {
-      // get ringtone name and size
-      rearRingtone = event:attr("rearRingtone");
-      rearRingtoneSize = dropbox_get_file_size(rearRingtone);
-
-      // capture current doorbell state
-      config = ent:myDoorbellState;
-
-      // gather potential changes as a map
-      changes = {"ringtone_new_rear":"true",
-		 "ringtone_name_rear":rearRingtone
-		};
-
-      // merge modifications with current state
-      config = config.put(changes);
-    }
-    {
-      CloudRain:hideSpinner();
-    }
-    fired {
-      // save current state as state
-      set ent:myDoorbellState config;
-      raise explicit event myDoorbellHome;
-    }
-  }
-
   // Dropbox OAuth authentication / authorization rules
   rule get_request_token {
     select when web cloudAppSelected
@@ -881,33 +695,6 @@ ruleset b502118x0 {
     }
   }
 
-
-  // this event is raised when the Home tab is selected
-  rule myDoorbellHomeTab {
-    select when web submit "#myDoorbellHomeBtn"
-    pre {
-    }
-    {
-      CloudRain:hideSpinner();
-    }
-    always {
-      raise explicit event myDoorbellHome;
-    }
-  }
-
-
-  // this event is raised when the Setup tab is selected
-  rule myDoorbellSetupTab {
-    select when web submit "#myDoorbellSetupBtn"
-    pre {
-    }
-    {
-      CloudRain:hideSpinner();
-    }
-    always {
-      raise explicit event myDoorbellSetup;
-    }
-  }
 
   rule myDoorbellSetup {
     select when explicit myDoorbellSetup
