@@ -728,10 +728,6 @@ ruleset b502118x0 {
       // capture current doorbell state
       config = ent:myDoorbellState;
 
-      // print to log
-      // added comment
-      a = config.decode().klog(">> Config: >> ");
-
       // gather potential changes as a map
       changes = {"ringtone_new_front":"true",
 		 "ringtone_name_front":frontRingtone
