@@ -189,7 +189,7 @@ ruleset b502118x0 {
 
     // myDoorbellRingtone()
     // Input: parameter indicating "front" or "rear" door
-     // Returns: JSON containing ringtone
+    // Returns: JSON containing ringtone
     // Example Return: {"ringtone":"utf-8 encoded ringtone"}
     //
     // Example curl: curl http://cs.kobj.net/sky/cloud/b502118x0/
@@ -539,31 +539,9 @@ ruleset b502118x0 {
       		      "_type":"rearRing",
 		      "_async":"true"};
 
-      ackpayloadFront = {"_domain":"myDoorbell",
-      		      "_type":"gotFrontRingtone",
-		      "_async":"true"};
-
-      ackpayloadRear  = {"_domain":"myDoorbell",
-      		      "_type":"gotRearRingtone",
-		      "_async":"true"};
-
       webhookResourceFront = '/sky/event/' + meta:eci();
 
       webhookResourceRear = '/sky/event/' + meta:eci();
-
-      ringtoneResourceFront = '/sky/cloud/' + 
-      			       meta:rid() + 
-			       '/myDoorbellRingtone?door=front&_eci=' +
-			       meta:eci();
-
-      ringtoneResourceRear = '/sky/cloud/' + 
-      			       meta:rid() + 
-			       '/myDoorbellRingtone?door=rear&_eci=' +
-			       meta:eci();
-
-      ringtoneAckResourceFront = '/sky/event/' + meta:eci() + '/12345';
-
-      ringtoneAckResourceRear = '/sky/event/' + meta:eci() + '/12345';
 
       initState = {"volume_front":initVolume,
       	           "volume_rear":initVolume,
