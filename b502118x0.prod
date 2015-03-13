@@ -281,8 +281,6 @@ ruleset b502118x0 {
 						   (k eq "poll_time") ||
 						   (k eq "ringtone_name_front") ||
 						   (k eq "ringtone_name_rear") ||
-						   (k eq "ringtone_resource_front") ||
-						   (k eq "ringtone_resource_rear") ||
 						   (k eq "ringtone_ack_resource_front") ||
 						   (k eq "ringtone_ack_resource_rear") ||
 						   (k eq "ringtone_ack_method") ||
@@ -299,26 +297,6 @@ ruleset b502118x0 {
       changes = ((newHeaders.length() >= 0) && (newHeaders.length() < 101)) => 
   	            changes.put(["webhook_http_headers"], newHeaders) |
       	      	    changes.put(["webhook_http_headers"], config.pick("$.webhook_http_headers"));
-      
-      // ringtone resource front, check length and replace if appropriate
-      newRingtoneResource = (changes.keys().any(function(x){x eq "ringtone_resource_front"})) =>
-		              changes.pick("$.ringtone_resource_front")
-		            | config.pick("$.ringtone_resource_front");
-      status = ((newRingtoneResource.length() > 0) && (newRingtoneResource.length() < 101)) => 
- 		   status | "Error: Ringtone Resource";
-      changes = ((newRingtoneResource.length() > 0) && (newRingtoneResource.length() < 101)) => 
-  	            changes.put(["ringtone_resource_front"], newRingtoneResource) |
-      	      	    changes.put(["ringtone_resource_front"], config.pick("$.ringtone_resource_front"));
-      
-      // ringtone resource rear, check length and replace if appropriate
-      newRingtoneResource = (changes.keys().any(function(x){x eq "ringtone_resource_rear"})) =>
-		     changes.pick("$.ringtone_resource_rear")
-		  |  config.pick("$.ringtone_resource_rear");
-      status = ((newRingtoneResource.length() > 0) && (newRingtoneResource.length() < 101)) => 
- 		   status | "Error: Ringtone Resource";
-      changes = ((newRingtoneResource.length() > 0) && (newRingtoneResource.length() < 101)) => 
-  	            changes.put(["ringtone_resource_rear"], newRingtoneResource) |
-      	      	    changes.put(["ringtone_resource_rear"], config.pick("$.ringtone_resource_rear"));
       
       // webhook method, check if PUT, POST, or GET and replace if appropriate
       newWebhookMethod = (changes.keys().any(function(x){x eq "webhook_method"})) =>
@@ -676,8 +654,6 @@ ruleset b502118x0 {
 		   "ringtone_new_rear":"false",
 		   "ringtone_name_front":"",
 		   "ringtone_name_rear":"",
-		   "ringtone_resource_front":"#{ringtoneResourceFront}",
-		   "ringtone_resource_rear":"#{ringtoneResourceRear}",
 		   "ringtone_ack_resource_front":"#{ringtoneAckResourceFront}",
 		   "ringtone_ack_resource_rear":"#{ringtoneAckResourceRear}",
 		   "ringtone_ack_method":"POST",
