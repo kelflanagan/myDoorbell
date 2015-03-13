@@ -2,11 +2,11 @@
 # Author: J. Kelly Flanagan
 # Copyright (c) 2015
 #
-# get_ringtone.py connects to a ringtone server and downloads a
-# ringtone and stores it to a file for the front or rear bell.
+# get_config.py connects to a configuration server and downloads the 
+# device configuration data and store it to a file.
 ########################################################################
 
-#!/usr/bin/python
+#!/usr/local/bin/python
 
 import requests
 import os
@@ -30,9 +30,9 @@ def make_https_request(server, resource, parameters):
 #             parameters - include the ?
 #             data - payload
 # returns: response object as defined by requests
-def make_https_post(server, resource, parameters, payload, header):
+def make_https_post(server, resource, parameters, payload):
     url = 'https://' + server + resource + parameters
-    response = requests.post(url, data=ast.literal_eval(payload), headers=header)
+    response = requests.post(url, data=ast.literal_eval(payload))
     return response
 
 # let the ringtone server know that we acquired the ringtone so it
@@ -44,12 +44,10 @@ def got_ringtone(bell):
     resource = myDBConfig['ringtone_ack_resource_' + bell]
     # form ack payload
     payload = myDBConfig['ringtone_ack_payload_' + bell]
-    # form headers
-    headers = {'content-type': 'application/json'}
 
     # only support POST currently
     if method == 'POST':
-        make_https_post('cs.kobj.net', resource, '', payload, headers)
+        make_https_post('cs.kobj.net', resource, '', payload)
     else:
         print 'Only POST supported'
 
@@ -102,7 +100,6 @@ try:
     cf = open('/tmp/myDoorbellConfig', 'r')
 except IOError:
     print 'Cant open configuration file'
-    exit(0)
 else:
     myDBConfig = ast.literal_eval(cf.read())
     cf.close()
@@ -110,11 +107,9 @@ else:
 # Determine if a new ringtone is needed. if it is, get it.  Let the server
 # know we got it
 if myDBConfig['ringtone_new_front'] == 'true':
-    print 'Should get front ringtone'
     if get_ringtone('front'):
         got_ringtone('front')
 
 if myDBConfig['ringtone_new_rear'] == 'true':
-    print 'Should get rear ringtone'
     if get_ringtone('rear'):
         got_ringtone('rear')

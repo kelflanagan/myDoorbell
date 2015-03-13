@@ -6,7 +6,7 @@
 # device configuration data and store it to a file.
 ########################################################################
 
-#!/usr/bin/python
+#!/usr/local/bin/python
 
 import requests
 import os
