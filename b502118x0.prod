@@ -134,26 +134,26 @@ ruleset b502118x0 {
     //
     // log is an array that will be passed in
     // where each entry is a string containing the date and time.
-    log2html = function(log) {
-      my_item_map = log.head();
+    log2html = function(myDBlog) {
+      my_item_map = myDBlog.head();
       item_time = my_item_map{"time"};
       this_date = date(item_time);
       todays_date = date(time:now());
       this_door = my_item_map{"door"};
 
-      (log.length() > 0) => 
+      (myDBlog.length() > 0) => 
         (this_date eq todays_date) =>
 	  (this_door eq "front") =>
 	    "<font color=\"#00aa00\">" + "<b>" + time:strftime(item_time, "%c") + "</b>" + "<br>" +
-	    "</font>" + log2html(log.tail()) |
+	    "</font>" + log2html(myDBlog.tail()) |
 	    "<font color=\"#0000aa\">" + "<b>" + time:strftime(item_time, "%c") + "</b>" + "<br>" + 
-	    "</font>" + log2html(log.tail())
+	    "</font>" + log2html(myDBlog.tail())
 	  |
 	  (this_door eq "front") =>
 	    "<font color=\"#00aa00\">" + time:strftime(item_time, "%c") + "<br>" + "</font>" + 
-	    log2html(log.tail()) |
+	    log2html(myDBlog.tail()) |
 	    "<font color=\"#0000aa\">" + time:strftime(item_time, "%c") + "<br>" + "</font>" + 
-	    log2html(log.tail())
+	    log2html(myDBlog.tail())
 	|
 	"";
     }
@@ -1047,7 +1047,7 @@ ruleset b502118x0 {
 
       // calculate a few needful things
       totalRings = ent:myDoorbellFrontRingCount + ent:myDoorbellRearRingCount;
-      log = ent:myDoorbellRingLog;
+      myDBlog = ent:myDoorbellRingLog;
       list = dropbox_list_files();
 
       // generate html to display
@@ -1256,7 +1256,7 @@ ruleset b502118x0 {
 		      <div class="key" id="rear">Rear</div>
 		    </div>
 		    <div class="log-box">
-		      #{log2html(log.reverse())}
+		      #{log2html(myDBlog.reverse())}
       	            </div>
       		  </div>
       		  <div class="column-wrapper">
