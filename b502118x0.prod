@@ -851,7 +851,7 @@ ruleset b502118x0 {
     always {
       set ent:myDoorbellECI eci;
       set ent:myDoorbellRID rid;
-      raise explicit event myDoorbellSetup if (authorized);
+//      raise explicit event myDoorbellSetup if (authorized);
     }
   }
 }
