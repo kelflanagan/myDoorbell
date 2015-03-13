@@ -135,7 +135,7 @@ ruleset b502118x0 {
     // log is an array that will be passed in
     // where each entry is a string containing the date and time.
     log2html = function(myDBlog) {
-      my_item_map = myDBlog.head();
+      my_item_map = myDBlog.head().encode();
       item_time = my_item_map{"time"};
       this_date = date(item_time);
       todays_date = date(time:now());
