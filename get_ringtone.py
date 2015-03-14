@@ -11,8 +11,8 @@
 import requests
 import os
 import ast
-import time
 import json
+import time
 
 myDoorbellKeys = {}
 myDBConfig = {}
@@ -108,7 +108,7 @@ def get_ringtone(bell):
             return False
     return False
 
-# Start of progra
+# Start of program
 # get eci and rid
 if get_keys() == False:
     print "Can't open key file, exiting"
@@ -119,6 +119,7 @@ try:
     cf = open('/tmp/myDoorbellConfig', 'r')
 except IOError:
     print 'Cant open configuration file'
+    exit(-1)
 else:
     myDBConfig = ast.literal_eval(cf.read())
     cf.close()
@@ -126,11 +127,15 @@ else:
 # Determine if a new ringtone is needed. if it is, get it.  Let the server
 # know we got it
 if myDBConfig['ringtone_new_front'] == 'true':
-    if get_ringtone('front'):
+    if get_ringtone('front') == False:
+        print 'Failed to get front ringtone'
+    else:
         if got_ringtone('front') == False:
-            print 'Failure'
+            print 'Failure to ack front ringtone'
 
 if myDBConfig['ringtone_new_rear'] == 'true':
-    if get_ringtone('rear'):
+    if get_ringtone('rear') == False:
+        print 'Failed to get rear ringtone'
         if got_ringtone('rear') == False:
-            print 'Failure'
+            print 'Failure to ack rear ringtone'
+
