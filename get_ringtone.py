@@ -14,6 +14,21 @@ import ast
 import time
 import json
 
+myDoorbellKeys = {}
+myDBConfig = {}
+
+def get_keys():
+    global myDoorbellKeys
+    try:
+        kf = open('myDoorbellKeys', 'r')
+    except IOError:
+        return False
+    else:
+        key_file = kf.read()
+        myDoorbellKeys = ast.literal_eval(key_file)
+        kf.close()
+        return True
+
 # function make_https_request
 # parameters: server - fully qualified doamin name
 #             resource - url
@@ -24,41 +39,39 @@ def make_https_request(server, resource, parameters):
     response = requests.get(url)
     return response
 
-# function make_https_post
-# parameters: server - fully qualified doamin name
-#             resource - url
-#             parameters - include the ?
-#             data - payload
-# returns: response object as defined by requests
-def make_https_post(server, resource, parameters, payload):
-    url = 'https://' + server + resource + parameters
-    response = requests.post(url, data=ast.literal_eval(payload))
-    return response
-
 # let the ringtone server know that we acquired the ringtone so it
-# can reset the flag
+# can reset the flag. If it fails it returns False otherwise True
 def got_ringtone(bell):
-    # get ack method
-    method = myDBConfig['ringtone_ack_method']
-    # get ringtone_ack resource
-    resource = myDBConfig['ringtone_ack_resource_' + bell]
-    # form ack payload
-    payload = myDBConfig['ringtone_ack_payload_' + bell]
+    # form headers for json
+    headers = {'content-type': 'application/json'}
+    # only supported method
+    method = 'POST'
+    # resource
+    resource = ("/sky/event/" + myDoorbellKeys['eci'] + '/12345')
+    # JSON payload
+    payload = ({'_domain':'myDoorbell', '_type':'got' + 
+                bell.capitalize() + 'Ringtone', '_async':'true'})
+    # server +
+    url = 'https://cs.kobj.net' + resource 
 
-    # only support POST currently
-    if method == 'POST':
-        make_https_post('cs.kobj.net', resource, '', payload)
+    # make request
+    response = requests.post(url, data=json.dumps(payload), headers=headers)
+    if response.status_code == requests.codes.ok:
+        return True
     else:
-        print 'Only POST supported'
+        return False
+
 
 # Acquire requested ringtone, write it to a temporary file, and rename it
 # to make the transaction atomic
 def get_ringtone(bell):
-    # acquire and form resource. This resource includes  parameters
-    resource = myDBConfig['ringtone_resource_' + bell]
+    # form resource and parameters
+    resource = "/sky/cloud/" + myDoorbellKeys['rid'] + "/myDoorbellRingtone"
+    parameters = "?door=" + bell + "&_eci=" + myDoorbellKeys['eci']
+
     # make request
     try:
-        r = make_https_request("cs.kobj.net", resource, '')
+        r = make_https_request("cs.kobj.net", resource, parameters)
     except r.ConnectionError:
         print "Connection error -", (time.strftime("%H:%M:%S"))
         return False
@@ -95,6 +108,12 @@ def get_ringtone(bell):
             return False
     return False
 
+# Start of progra
+# get eci and rid
+if get_keys() == False:
+    print "Can't open key file, exiting"
+    exit(-1)
+
 # read configuration file as it is needed multiple times in this service
 try:
     cf = open('/tmp/myDoorbellConfig', 'r')
@@ -108,8 +127,10 @@ else:
 # know we got it
 if myDBConfig['ringtone_new_front'] == 'true':
     if get_ringtone('front'):
-        got_ringtone('front')
+        if got_ringtone('front') == False:
+            print 'Failure'
 
 if myDBConfig['ringtone_new_rear'] == 'true':
     if get_ringtone('rear'):
-        got_ringtone('rear')
+        if got_ringtone('rear') == False:
+            print 'Failure'

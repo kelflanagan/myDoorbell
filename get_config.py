@@ -13,10 +13,30 @@ import os
 import ast
 import time
 
+myDoorbellKeys = {}
+
+def get_keys():
+    global myDoorbellKeys
+    try:
+        kf = open('myDoorbellKeys', 'r')
+    except IOError:
+        return False
+    else:
+        key_file = kf.read()
+        myDoorbellKeys = ast.literal_eval(key_file)
+        kf.close()
+        return True
+    
 def make_https_request(server, resource, parameters):
     url = "https://" + server + resource + "?" + parameters
     response = requests.get(url)
     return response
+
+# Start of program
+# get eci and rid
+if get_keys() == False:
+    print "Can't open key file, exiting"
+    exit(-1)
 
 # read in the configuration file if it exists and store in a dictionary
 # if it doesn't exist then create an empty dictionary
@@ -32,8 +52,8 @@ else:
 # get the configuration from the config server
 try:
     response = make_https_request("cs.kobj.net",
-                                  "/sky/cloud/b502118x0.dev/myDoorbellConfig",
-                                  "_eci=C695CE4E-0B91-11E3-9DB3-90EBE71C24E1")
+                                  "/sky/cloud/" + myDoorbellKeys['rid'] + "/myDoorbellConfig",
+                                  "_eci=" + myDoorbellKeys['eci'])
 except requests.ConnectionError:
     print "Connection error -", (time.strftime("%H:%M:%S"))
 except:
