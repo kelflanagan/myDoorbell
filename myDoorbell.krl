@@ -142,32 +142,32 @@ ruleset b502118x0 {
       	       		    h.put(["ringtone_error"], "error");
     }
 
+    // function newRingtone
+    //
+    // parameters: filename of new ringtone to be found at dropbox
+    // 		   oldSize is the size of the previous ringtone
+    //		   door is either front ot rear
+    // return:     A map such a	{"ringtone_new_front":"true",
+    //			 	 "ringtone_name_front":"my_ringtone"}
+    // errors:     If the filename doesn't exist the ringtone file is
+    // 		   set to the new filename, the size is set to 0 and the
+    //		   need for a new ringtone is set to false.
+    newRingtone = function(filename, door) {
+      returnMap = (door eq "front") =>
+  	  	  {"ringtone_new_front":"true",
+		   "ringtone_name_front":"#{filename}"} |
+		  (door eq "rear") =>			 
+      		  {"ringtone_new_rear":"true",
+		   "ringtone_name_rear":"#{filename}"} |
+		   "";
+      returnMap;
+    } // end newRingtone
+
     // check to see if we are authorized on Dropbox
     account_info_result = dropbox_core_api_call('/account/info');
     authorized = account_info_result{'status_code'} eq '200';
   }
 
-
-  // function newRingtone
-  //
-  // parameters: filename of new ringtone to be found at dropbox
-  // 		   oldSize is the size of the previous ringtone
-  //		   door is either front ot rear
-  // return:     A map such a	{"ringtone_new_front":"true",
-  //			 	 "ringtone_name_front":"my_ringtone"}
-  // errors:     If the filename doesn't exist the ringtone file is
-  // 		   set to the new filename, the size is set to 0 and the
-  //		   need for a new ringtone is set to false.
-  newRingtone = function(filename, door) {
-    returnMap = (door eq "front") =>
-  	  	{"ringtone_new_front":"true",
-		 "ringtone_name_front":"#{filename}"} |
-		(door eq "rear") =>			 
-      		{"ringtone_new_rear":"true",
-		 "ringtone_name_rear":"#{filename}"} |
-		 "";
-    returnMap;
-  } // end newRingtone
 
   // beginning of event rules
   // this event is raised to modify doorbell state
