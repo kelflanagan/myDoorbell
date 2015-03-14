@@ -1,6 +1,6 @@
 ruleset b502118x0 {
   meta {
-    name "myDoorbell"
+    name "myDoorbell v0.1"
     description <<
       Doorbell Application
     >>
