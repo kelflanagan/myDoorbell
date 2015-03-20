@@ -1,0 +1,17 @@
+Get Config
+curl -X GET http://cs.kobj.net/sky/cloud/b502118x0.dev/myDoorbellConfig?_eci=C695CE4E-0B91-11E3-9DB3-90EBE71C24E1
+
+Name New Rear Ringtone
+curl -X POST https://cs.kobj.net/sky/event/C695CE4E-0B91-11E3-9DB3-90EBE71C24E1/12345/myDoorbell/Config?ringtone_name_rear=dingdong.mp3
+
+Name New Front Ringtone
+curl -X POST https://cs.kobj.net/sky/event/C695CE4E-0B91-11E3-9DB3-90EBE71C24E1/12345/myDoorbell/Config?ringtone_name_front=Little+Bitty.mp3
+
+Get New Ringtone
+curl -X GET https://cs.kobj.net/sky/cloud/b502118x0.dev/myDoorbellRingtone?door=front&_eci=C695CE4E-0B91-11E3-9DB3-90EBE71C24E1
+
+Ring Bell
+curl -X POST https://cs.kobj.net/sky/event/C695CE4E-0B91-11E3-9DB3-90EBE71C24E1/12345/myDoorbell/frontRing
+
+Initialize
+curl -X POST https://cs.kobj.net/sky/event/C695CE4E-0B91-11E3-9DB3-90EBE71C24E1/12345/myDoorbell/initialize
