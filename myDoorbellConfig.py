@@ -41,7 +41,7 @@ import signal
 
 # keys = home_dir, config_server, eci, rid
 myDoorbellInit = {}
-myDoorbellHomeDir = '/Users/kelly'
+myDoorbellHomeDir = '/home'
 
 # fill myDoorbellInit global dictionary
 def get_init():
