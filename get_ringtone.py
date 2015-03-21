@@ -120,7 +120,7 @@ def get_ringtone(bell, home):
 
 # Start of program
 # get home directory
-home_dir = os.environ['HOME']
+home_dir = /home
 
 # get eci and rid
 if get_init(home_dir) == False:
