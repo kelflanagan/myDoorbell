@@ -52,7 +52,7 @@ def get_init(home):
     
 # Program execution begins here
 # find home
-home_dir = /home
+home_dir = '/home'
 
 # get eci, rid, server name, etc. into global dictionary
 # named myDoorbellInit
