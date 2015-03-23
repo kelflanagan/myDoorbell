@@ -1,0 +1,12 @@
+#!/bin/sh
+
+DBEXECS=myDoorbellConfig.py
+DBHOME=/home/myDoorbell
+DBCRON=$DBHOME/cron
+DBBIN=$DBHOME/bin
+
+mv $DBEXECS $DBBINS 
+mv myDoorbell.cron $DBCRON
+mv myDoorbellInit $DBHOME
+rm *.tar
+

@@ -1,0 +1,1 @@
+* * * * * /usr/local/bin/python /home/myDoorbell/bin/myDoorbellConfig.py 1> /tmp/myDoorbellConfig.log
