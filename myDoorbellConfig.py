@@ -130,7 +130,7 @@ def get_ringtone(bell):
                 f.close()
                 # move file atomically 
                 os.rename(tmp, fn)
-                print "Update %s ringtone" % bell
+                print time.asctime( time.localtime(time.time())), 'Update %s ringtone' % bell
                 return True
         else:
             print "Bad response"
@@ -143,26 +143,20 @@ def get_ringtones(dict):
     ret_val = False
     if dict['ringtone_new_front'] == 'true':
         ret_val = True
-        print 'Config file indicates front ringtone is needed'
         # reset flag indicating need. If acquisition fails we'll catch
         # it on the next iteration
         if get_ringtone('front') == True:
-            if got_ringtone('front') == True:
-                print 'Got event sent successfully'
-            else:
+            if got_ringtone('front') == False:
                 print 'Failure to ack front ringtone'
         else:
             print 'Failed to get front ringtone'
 
     if dict['ringtone_new_rear'] == 'true':
         ret_val = True
-        print 'Config file indicates rear ringtone is needed'
         # reset flag indicating need. If acquisition fails we'll catch
         # it on the next iteration
         if get_ringtone('rear') == True:
-            if got_ringtone('rear') == True:
-                print 'Got event sent successfully'
-            else:
+            if got_ringtone('rear') == False:
                 print 'Failure to ack rear ringtone'
         else:
             print 'Failed to get rear ringtone'
@@ -192,7 +186,7 @@ def myDoorbell_is_running():
             file(pf, 'w').write(pid)
             return False
         else:
-            print "%s already exists" % pf
+            print "%s already exists" % pf, time.asctime(time.localtime(time.time()))
             return True
     else:
         file(pf, 'w').write(pid)
@@ -256,12 +250,11 @@ else:
             os.rename(myDoorbellHomeDir + '/myDoorbell/myDoorbellConfig.tmp', 
                       myDoorbellHomeDir + '/myDoorbell/myDoorbellConfig')
             old_dict = new_dict
-            print "Update"
+            print time.asctime( time.localtime(time.time())), "Update"
         else:
-            print "Success"
+            print time.asctime( time.localtime(time.time())), "Success"
     else:
         print "Bad response"
 
 #clean up before we leave
-print 'removing pid file'
 os.remove('/tmp/myDoorbell.pid')
