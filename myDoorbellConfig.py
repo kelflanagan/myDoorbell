@@ -183,6 +183,7 @@ def myDoorbell_is_running():
             except:
                 print "exception on kill"
             # write file
+            print time.asctime(time.localtime(time.time())), 'Killed'
             file(pf, 'w').write(pid)
             return False
         else:
