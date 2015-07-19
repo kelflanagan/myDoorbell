@@ -2,8 +2,8 @@
 # Author: J. Kelly Flanagan
 # Copyright (c) 2015
 #
-# myDoorbellConfig.py connects to a configuration server and downloads the 
-# device configuration data, acts on it, and stores it to a file.
+# myDoorbellVolume.py reads the downloaded configuration file and sets
+# the mixers volume to the values from the configuration
 #
 # This program is intended to be started each minute by cron and either
 # exits due to success or failure.
@@ -41,7 +41,7 @@ import signal
 
 # keys = home_dir, config_server, eci, rid
 myDoorbellInit = {}
-myDoorbellHomeDir = '/users/kelly/dropbox/src/'
+myDoorbellHomeDir = '/home'
 
 # fill myDoorbellInit global dictionary
 def get_init():
